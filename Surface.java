@@ -3,20 +3,21 @@ package classes.gis.property;
 import java.util.LinkedList;
 
 public class Surface {
-  private LinkedList<Point> points;
+  private Point [] points;
+  private int pointCount;
   
-  public Surface(LinkedList<Point> points) {
+  public Surface(Point [] points) {
     this.points = points;
   }
   
   public double area() {
     /*
-    Någon algoritm utifrån lista av punkter till area.
+    Någon algoritm utifrån array av punkter till area.
     */
     return 0;
   }
   
-  public LinkedList<Point> getCorners() {
+  public Point [] getPoints() {
     return points;
   }
 }

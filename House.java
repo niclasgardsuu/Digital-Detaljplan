@@ -6,16 +6,11 @@ public class House {
   private Surface surface;
   //private double height; //kanske inte behövs men aa
   
-  public House(/*LinkedList<Point> points*/) {
-    LinkedList<Point> points = new LinkedList<Point>();
-    points.add(new Point(1,1));
-    points.add(new Point(2,1));
-    points.add(new Point(2,2));
-    points.add(new Point(1,2));
+  public House(Point [] points) {
     this.surface = new Surface(points);
   }
   
-  public LinkedList<Point> getCorners() {
-    return surface.getCorners();
+  public Point [] getPoints() {
+    return surface.getPoints();
   }
 }
