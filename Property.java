@@ -8,37 +8,42 @@ public class Property {
   private Surface plot;
   
   public Property(String filename) { //tror man ska utgå från shapefile här för att få in värden till houses.
-    int houseCount = 3;
-    this.houses = new House[houseCount];
+    int houseCount = 2;
+    House [] tempHouses = new House[houseCount];
     
-    int pointCount = 4;
+    int pointCount = 3;
     Point [] points1 = new Point[pointCount];
-    points1[0] = new Point(2,1);
-    points1[1] = new Point(3,4);
-    points1[2] = new Point(1,4);
-    points1[3] = new Point(1,2);
-    houses[0] = new House(points1);
+    points1[0] = new Point(0.5,0.5);
+    points1[1] = new Point(4.5,0.5);
+    points1[2] = new Point(0.5,4.5);
+    tempHouses[0] = new House(points1);
     
-    pointCount = 3;
+    pointCount = 5;
     Point [] points2 = new Point[pointCount];
-    points2[0] = new Point(3,4);
-    points2[1] = new Point(4,5);
-    points2[2] = new Point(3,5);
-    houses[1] = new House(points2);
+    points2[0] = new Point(3,3);
+    points2[1] = new Point(4,3);
+    points2[2] = new Point(5,4);
+    points2[3] = new Point(4,5);
+    points2[4] = new Point(3,4);
+    tempHouses[1] = new House(points2);
     
+    /*
     pointCount = 3;
     Point [] points3 = new Point[pointCount];
-    points2[0] = new Point(4,3.5);
-    points2[1] = new Point(5,4);
-    points2[2] = new Point(4,4);
-    houses[2] = new House(points2);
+    points3[0] = new Point(4,3.5);
+    points3[1] = new Point(5,4);
+    points3[2] = new Point(4,4);
+    tempHouses[2] = new House(points3);
+    */
+    
+    this.houses = tempHouses;
     
     pointCount = 4;
     Point [] points4 = new Point[pointCount];
-    points3[0] = new Point(0,0);
-    points3[0] = new Point(5,0);
-    points3[0] = new Point(5,6);
-    points3[0] = new Point(0,6);
+    points4[0] = new Point(0,0);
+    points4[0] = new Point(5,0);
+    points4[0] = new Point(5,6);
+    points4[0] = new Point(0,6);
     
     this.plot = new Surface(points4);
   }
@@ -56,7 +61,7 @@ public class Property {
       points[i] = intersectPoints.get(i);
       */
       
-      Point [] currentHousePoints = house.getPoints();
+      Point [] currentHousePoints = houses[currentHouseIndex].getPoints();
       int currentHousePointCount = currentHousePoints.length;
       for(int i = 0; i < currentHousePointCount; i++) {
         //declare a line going through the two connected points of the house
@@ -83,16 +88,20 @@ public class Property {
               }
               //get intersection point
               Point intersection = currentLine.intersect(currentIterLine);
+              System.out.println("(" + currentLine + " & " + currentIterLine + ")");
               //check if collision with the segment
               if(intersection != null && ((intersection.x >= currentIterLine.a.x && intersection.x <= currentIterLine.b.x) || (intersection.x >= currentIterLine.b.x && intersection.x <= currentIterLine.a.x)))
               
               if(intersection != null) { //accumulatively add the intersection point to the list of points if it was valid
+                System.out.println("INTERSECT: " + intersection);
                 intersectPoints.add(intersection);
               }
             }
           }
         }
       }
+      System.out.println("");
+      System.out.println("NEW HOUSE:");
       currentHouseIndex++;
     }
     Point [] points = new Point[intersectPoints.size()];
