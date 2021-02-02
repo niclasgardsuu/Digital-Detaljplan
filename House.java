@@ -13,4 +13,8 @@ public class House {
   public Point [] getPoints() {
     return surface.getPoints();
   }
+  
+  public double area() {
+    return surface.area();
+  }
 }

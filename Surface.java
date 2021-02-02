@@ -14,7 +14,14 @@ public class Surface {
     /*
     Någon algoritm utifrån array av punkter till area.
     */
-    return 0;
+    int length = points.length;
+    double acc = 0; //accumulator of the numerator of the formula for area
+    for(int i = 0; i < (length)-1; i++) {
+      acc += (points[i].x * points[i+1].y) - (points[i].y * points[i+1].x);
+    }
+    acc += (points[length-1].x * points[0].y) - (points[length-1].y * points[0].x);
+    
+    return acc/2;
   }
   
   public Point [] getPoints() {

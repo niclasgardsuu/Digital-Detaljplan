@@ -9,7 +9,7 @@ public class Line {
     this.b = b;
   }
   
-  public Point intersect(Line other) {
+  public Point intersect(Line other) { // other is a line segment,
     double dx1 = (a.x - b.x);
     double dy1 = (a.y - b.y);
     
@@ -29,9 +29,15 @@ public class Line {
         if(den == 0) return null;
         double x = (m1 - m2) / den;
         double y = k1*x + m1;
-        return new Point(x,y);
+        if((x < a.x && x > b.x) || (x < b.x && x > a.x)) {
+          return new Point(x,y);
+        } else {
+          return null;
+        }
       } else {
-        //this means that the second line has a vertical slope. We want to know if the first line passes through the vertical line segment by checking if the x-coord of a point changes from one side of the line to the other when passing in the two y-values
+        //this means that the second line has a vertical slope. We want to know if the first line 
+        //passes through the vertical line segment by checking if the x-coord of a point changes 
+        //from one side of the line to the other when passing in the two y-values
         double x_y1 = (other.a.y - m1)/ k1;
         double x_y2 = (other.b.y - m1)/ k1;
         
@@ -43,7 +49,8 @@ public class Line {
       }
     } else {
       if(dx2 != 0) {
-        //this means that the first line has vertical slope. We want to check if the the vertical line is going through the interval of the second line's both x-coords
+        //this means that the first line has vertical slope. We want to check if the the 
+        //vertical line is going through the interval of the second line's both x-coords
         if((other.a.x <= a.x && other.b.x >= a.x) || (other.b.x <= a.x && other.a.x >= a.x)) {
           double k2 = dy2/dx2;
           double m2 = other.a.y - k2*other.a.x;

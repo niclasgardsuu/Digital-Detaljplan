@@ -11,6 +11,8 @@ public class Property {
     int houseCount = 2;
     House [] tempHouses = new House[houseCount];
     
+    //temporary way of generating our houses and property borders
+    //to make things simpler when reading from the shapefile, areas where you cannot build can be stored as houses, because they will work the same.
     int pointCount = 3;
     Point [] points1 = new Point[pointCount];
     points1[0] = new Point(0.5,0.5);
@@ -41,13 +43,21 @@ public class Property {
     pointCount = 4;
     Point [] points4 = new Point[pointCount];
     points4[0] = new Point(0,0);
-    points4[0] = new Point(5,0);
-    points4[0] = new Point(5,6);
-    points4[0] = new Point(0,6);
+    points4[1] = new Point(5,0);
+    points4[2] = new Point(5,6);
+    points4[3] = new Point(0,6);
     
     this.plot = new Surface(points4);
   }
   
+  public House [] getHouses() {
+    return this.houses;
+  }
+  
+  /*
+  @brief calculates all the intersecting point if we were to extend all house segments into all other lines on the porperty
+  @return array of all the intersection points
+  */
   public Point [] getIntersectingPoints() {
     LinkedList<Point> intersectPoints = new LinkedList<Point>();
     int currentHouseIndex = 0;
@@ -90,13 +100,33 @@ public class Property {
               Point intersection = currentLine.intersect(currentIterLine);
               System.out.println("(" + currentLine + " & " + currentIterLine + ")");
               //check if collision with the segment
-              if(intersection != null && ((intersection.x >= currentIterLine.a.x && intersection.x <= currentIterLine.b.x) || (intersection.x >= currentIterLine.b.x && intersection.x <= currentIterLine.a.x)))
-              
-              if(intersection != null) { //accumulatively add the intersection point to the list of points if it was valid
+              if(intersection != null) {
+                //accumulatively add the intersection point to the list of points if it was valid
                 System.out.println("INTERSECT: " + intersection);
                 intersectPoints.add(intersection);
               }
             }
+          }
+        }
+        Point [] plotPoints = plot.getPoints();
+        int plotPointCount = plotPoints.length;
+        for (int j = 0; j < plotPointCount; j++) {
+          Line currentPlotLine = null;
+          if(j != plotPointCount-1) {
+            currentPlotLine = new Line(plotPoints[j],plotPoints[j+1]);
+          } else {
+            currentPlotLine = new Line(plotPoints[j],plotPoints[0]);
+          }
+          Point intersection = currentLine.intersect(currentPlotLine);
+          System.out.println("(" + currentLine + " & " + currentPlotLine + ")");
+          //check if collision with the segment
+          if(intersection != null && 
+            ((intersection.x >= currentPlotLine.a.x && intersection.x <= currentPlotLine.b.x) 
+            || 
+            (intersection.x >= currentPlotLine.b.x && intersection.x <= currentPlotLine.a.x))) {
+            //accumulatively add the intersection point to the list of points if it was valid
+            System.out.println("INTERSECT: " + intersection);
+            intersectPoints.add(intersection);
           }
         }
       }
@@ -111,11 +141,60 @@ public class Property {
     return points;
   }
   
+  public Point [] getAllPoints() {
+    LinkedList<Point> allPoints = new LinkedList<Point>();
+    
+    //points of all the houses
+    for(int i = 0; i < this.houses.length; i++) {
+      Point [] currentHousePoints = houses[i].getPoints();
+      for(int j = 0; j < currentHousePoints.length; j++) {
+        allPoints.add(currentHousePoints[j]);
+      }
+    }
+    //points of the border
+    Point [] plotPoints = this.plot.getPoints();
+    for(int i = 0; i < plotPoints.length; i++) {
+      allPoints.add(plotPoints[i]);
+    }
+    
+    //points of all intersections
+    Point [] intersectPoints = this.getIntersectingPoints();
+    for(int i = 0; i < intersectPoints.length; i++) {
+      allPoints.add(intersectPoints[i]);
+    }
+    
+    //remove duplicates
+    LinkedList<Point> allUniquePoints = new LinkedList<Point>();
+    System.out.println(allPoints);
+    System.out.println(allUniquePoints);
+    while(allPoints.size() > 0) {
+      Point currentPoint = allPoints.pollFirst();
+      if(!allUniquePoints.contains(currentPoint)) {
+        allUniquePoints.add(currentPoint);
+      }
+    }
+    System.out.println(allPoints);
+    System.out.println(allUniquePoints);
+    
+    //transfer to array
+    Point [] points = new Point[allUniquePoints.size()];
+    for(int i = 0; i < points.length; i++) {
+      points[i] = allUniquePoints.get(i);
+    }
+    return points;
+  }
+  
   static public void main(String [] args) {
     Property prop = new Property("hello");
-    Point [] points = prop.getIntersectingPoints();
-    for(int i = 0; i < points.length; i++) {
-      System.out.println(points[i]);
+    Point [] intersectPoints = prop.getIntersectingPoints();
+    for(int i = 0; i < intersectPoints.length; i++) {
+      System.out.println(intersectPoints[i]);
     }
+    House [] houses = prop.getHouses();
+    for(House house : houses) {
+      System.out.println(house.area());
+    }
+    
+    Point [] allPoints = prop.getAllPoints();
   }
 }

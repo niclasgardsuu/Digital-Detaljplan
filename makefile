@@ -6,3 +6,4 @@ run:
 	
 clean:
 	rm -f *.class
+	rm -r classes
